@@ -567,8 +567,9 @@ window.ROKN = window.ROKN || {};
     'assets/js/admin/i18n.js', 'assets/js/admin/kit.js', 'assets/js/admin/shell.js', 'assets/js/admin/pages-core.js', 'assets/js/admin/pages-catalog.js', 'assets/js/admin/pages-admin.js'];
   let adminLoading = null;
   ROKN.loadAdmin = () => adminLoading || (adminLoading = new Promise((res, rej) => {
-    if (!document.querySelector('link[data-admin-css]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'assets/css/admin.css'; l.dataset.adminCss = '1'; document.head.appendChild(l); }
-    const next = i => { if (i >= ADMIN_FILES.length) return res(); const s = document.createElement('script'); s.src = ADMIN_FILES[i]; s.onload = () => next(i + 1); s.onerror = () => rej(new Error('Failed to load ' + ADMIN_FILES[i])); document.body.appendChild(s); };
+    const V = window.ROKN_ASSET_VER ? '?v=' + window.ROKN_ASSET_VER : '';
+    if (!document.querySelector('link[data-admin-css]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'assets/css/admin.css' + V; l.dataset.adminCss = '1'; document.head.appendChild(l); }
+    const next = i => { if (i >= ADMIN_FILES.length) return res(); const s = document.createElement('script'); s.src = ADMIN_FILES[i] + V; s.onload = () => next(i + 1); s.onerror = () => rej(new Error('Failed to load ' + ADMIN_FILES[i])); document.body.appendChild(s); };
     next(0);
   }));
   pages.admin = {

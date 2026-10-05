@@ -112,7 +112,7 @@ function serveStatic(req, res) {
     if (p === '/index.html') {   // inject the live public catalogue so the storefront shows admin prices & stock instantly
       let html = fs.readFileSync(file, 'utf8');
       const pub = pubCache || (pubCache = svc.publicCatalog());
-      html = html.replace('<script src="assets/js/config.js"></script>', `<script src="assets/js/config.js"></script>\n<script>window.ROKN.config.apiBase='/api';window.ROKN_PUB=${JSON.stringify(pub).replace(/</g, '\\u003c')};</script>`);
+      html = html.replace(/(<script src="assets\/js\/config\.js[^"]*"><\/script>)/, `$1\n<script>window.ROKN.config.apiBase='/api';window.ROKN_PUB=${JSON.stringify(pub).replace(/</g, '\\u003c')};</script>`);
       return send(res, 200, html, { 'Content-Type': TYPES['.html'], 'Cache-Control': 'no-cache' });
     }
     res.writeHead(200, Object.assign({}, SEC_HEADERS, { 'Content-Type': TYPES[ext] || 'application/octet-stream', 'Cache-Control': /\.(webp|png|jpg|svg)$/.test(ext) ? 'public, max-age=604800' : 'no-cache', 'Content-Length': st.size }));
