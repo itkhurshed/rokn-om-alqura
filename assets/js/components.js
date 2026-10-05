@@ -503,7 +503,7 @@ window.ROKN = window.ROKN || {};
       </div>
       <ul class="thumbs" role="list">
         ${g.map((im, i) => `<li><button type="button" class="thumb${i === 0 ? ' on' : ''}" data-action="thumb" data-index="${i}" aria-label="${esc(vname(im.view))}" aria-pressed="${i === 0}">
-          <img src="${im.src.replace(/^(assets\/img\/store\/[\w-]+)\.webp$/, '$1-sm.webp').replace(/-drape\.webp$/, '-drape-sm.webp')}" alt="" decoding="async" width="160" height="200"><span>${esc(vname(im.view))}</span></button></li>`).join('')}
+          <img src="${ROKN.img.thumb(im.src)}" alt="" decoding="async" width="160" height="200"><span>${esc(vname(im.view))}</span></button></li>`).join('')}
       </ul>
     </div>`;
   };

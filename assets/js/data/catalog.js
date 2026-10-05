@@ -186,6 +186,8 @@ ROKN.img = {
   roll(p, color) { return this.pick(p, 'roll', color, `${this.base}${p.id}/${color}-roll.webp`); },
   styled(p) { return this.pick(p, 'styled', null, `${this.base}${p.id}/styled.webp`); },
   variations(p) { return this.pick(p, 'variations', null, `${this.base}${p.id}/variations.webp`); },
+  /* small version for thumbnails (store photos and drapes ship with -sm files) */
+  thumb(src) { return String(src || '').replace(/^(assets\/img\/store\/[\w-]+)\.webp$/, '$1-sm.webp').replace(/-drape\.webp$/, '-drape-sm.webp'); },
   gallery(p, color) {
     if (p.images && p.images.gallery) return p.images.gallery.map(g => typeof g === 'string' ? { src: g, view: 'photo' } : g);
     return [

@@ -541,7 +541,7 @@ window.ROKN = window.ROKN || {};
         main.alt = isAr() ? `${L(p.name)} باللون ${cname} — ${vname(g[st.index].view)}` : `${cname} ${L(p.name)} — ${vname(g[st.index].view)}`;
       }
       const cap = root.querySelector('[data-g-caption]'); if (cap) cap.textContent = `${vname(g[st.index].view)} · ${st.index + 1} / ${g.length}`;
-      root.querySelectorAll('.thumb').forEach((b, i) => { b.querySelector('img').src = g[i].src; const on = i === st.index; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      root.querySelectorAll('.thumb').forEach((b, i) => { b.querySelector('img').src = ROKN.img.thumb(g[i].src); const on = i === st.index; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
     }
   };
 
