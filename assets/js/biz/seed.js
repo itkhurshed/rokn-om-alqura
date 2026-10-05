@@ -13,6 +13,8 @@
 })(typeof self !== 'undefined' ? self : this, function (schema) {
   'use strict';
   const r3 = n => Math.round(n * 1000) / 1000;
+  /* Bump when the bundled catalogue/demo data changes: browsers still on untouched DEMO data are re-seeded */
+  const SEED_VERSION = 2;
 
   /* Real store photos supplied by the business (assets/img/store/) */
   const STORE_PHOTOS = [
@@ -20,7 +22,7 @@
     ['store-interior', 'store', 'Store interior with suiting shelves', 'داخل المتجر ورفوف أقمشة البدلات', 750, 765],
     ['store-shelves', 'store', 'Shelves of folded fabrics', 'رفوف الأقمشة المطوية', 1360, 1020],
     ['japan-green-forest', 'products', 'Green Forest Japanese dishdasha fabric', 'قماش دشاديش ياباني الغابة الخضراء', 740, 902],
-    ['japan-yearn-9x9', 'products', 'YEARN 9×9 Japanese dishdasha fabric', 'قماش دشاديش يارن ٩×٩', 1020, 1020],
+    ['japan-yearn-9x9', 'products', 'YEARN 9x9 Japanese dishdasha fabric', 'قماش دشاديش يارن ٩×٩', 1020, 1020],
     ['japan-liquid-repellent', 'products', 'Liquid-repellent Japanese dishdasha fabric', 'خام ضد السوائل ياباني', 750, 741],
     ['dishdasha-whites-fan', 'collections', 'Fan of white and cream dishdasha fabrics', 'مروحة أقمشة دشاديش بيضاء وكريمية', 765, 1020],
     ['dishdasha-herringbone', 'products', 'Herringbone dishdasha fabric', 'قماش دشاديش عظم السمكة', 765, 1020],
@@ -88,6 +90,7 @@
     STORE_PHOTOS.forEach(([n, folder, en, ar, w, h]) => db.upsert('media', { id: 'med_' + n, created_at: now, folder, name: n + '.webp', url: `assets/img/store/${n}.webp`, mime: 'image/webp', size: null, width: w, height: h, alt_en: en, alt_ar: ar, uses: [], uploaded_by: 'Store owner', real: true }));
     db.upsert('media', { id: 'med_logo_mark', created_at: now, folder: 'logo', name: 'favicon.svg', url: 'assets/img/favicon.svg', mime: 'image/svg+xml', size: null, width: 64, height: 64, alt_en: 'Rokn Om Alqura mark', alt_ar: 'شعار ركن أم القرى', uses: [{ target: 'logo', ref: null }], uploaded_by: 'System', real: false });
     db.upsert('meta', { id: 'schema_version', value: 1 });
+    db.upsert('meta', { id: 'seed_version', value: SEED_VERSION });
     db.upsert('meta', { id: 'seeded_at', value: now });
   }
 
@@ -290,5 +293,5 @@
     return { orders: orders.length, users: staff.length, password };
   }
 
-  return { base, demo, STORE_PHOTOS, permissionRows };
+  return { base, demo, STORE_PHOTOS, permissionRows, SEED_VERSION };
 });

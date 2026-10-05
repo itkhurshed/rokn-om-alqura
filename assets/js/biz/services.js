@@ -324,7 +324,7 @@
       });
       const pub = {}; schema.publicSettings.forEach(k => { pub[k] = st[k]; });
       return {
-        version: now(), products,
+        version: now(), seed: (db.get('meta', 'seed_version') || {}).value || 1, products,
         categories: db.all('categories').filter(c => c.status !== 'archived').sort((a, b) => (a.sort || 0) - (b.sort || 0)),
         collections: db.all('collections').filter(c => c.status !== 'archived').sort((a, b) => (a.sort || 0) - (b.sort || 0)),
         colors: db.all('colors'),
@@ -580,6 +580,10 @@
       p.variants = db.filter('product_variants', v => v.product_id === p.id).map(v => Object.assign(v, { inventory: db.get('inventory', v.id) }));
       return p;
     });
+    /* New products show a neutral "photo coming soon" image until photos are added from the Media Library */
+    const PH = 'assets/img/placeholder.webp', PH_SM = 'assets/img/placeholder-sm.webp';
+    const placeholderImages = () => ({ drape: PH, drapeSm: PH_SM, closeup: PH, roll: PH, folded: PH, styled: PH, variations: PH, gallery: [{ src: PH, view: 'photo' }] });
+    const isPh = v => !v || (typeof v === 'string' && /placeholder/.test(v));
     const PRODUCT_FIELDS = Object.keys(schema.tables.products.cols).filter(k => !['id', 'created_at', 'updated_at', 'demo', 'rating', 'review_count'].includes(k));
     def('products.save', 'self', (ctx, a) => {
       const isNew = !a.id || !db.get('products', a.id);
@@ -594,7 +598,7 @@
         id = str(a.id || d.slug || d.name_en, 60).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || uid('prd');
         if (db.get('products', id)) id = id + '-' + Math.random().toString(36).slice(2, 5);
         need(d.category && db.get('categories', d.category), 'invalid', 'Choose a category');
-        db.insert('products', Object.assign({ id, slug: id, created_at: now(), status: 'draft', currency: 'KWD', collections: [], rating: 0, review_count: 0, price_per_meter: 0 }, d, { id, updated_at: now() }));
+        db.insert('products', Object.assign({ id, slug: id, created_at: now(), status: 'draft', currency: 'KWD', collections: [], rating: 0, review_count: 0, price_per_meter: 0, images: placeholderImages() }, d, { id, updated_at: now() }));
       } else {
         const before = db.get('products', id);
         db.update('products', id, Object.assign(d, { updated_at: now() }));
@@ -1018,10 +1022,10 @@
       if (target === 'product' || target === 'product_featured') {
         need(can(ctx.perms, 'products', 'edit'), 'forbidden', 'Permission denied'); const p = db.get('products', ref); need(p, 'not_found', 'Choose a product');
         const imgs = Object.assign({}, p.images || {});
-        const gal = (imgs.gallery || []).filter(g => (g.src || g) !== m.url);
+        const gal = (imgs.gallery || []).filter(g => (g.src || g) !== m.url && !isPh(g.src || g));
         if (target === 'product_featured') { imgs.drape = m.url; imgs.drapeSm = m.url; imgs.styled = m.url; gal.unshift({ src: m.url, view: 'photo' }); } else gal.push({ src: m.url, view: 'photo' });
-        if (!imgs.drape) { imgs.drape = m.url; imgs.drapeSm = m.url; }
-        ['closeup', 'roll', 'folded', 'variations', 'styled'].forEach(k => { if (!imgs[k]) imgs[k] = (gal[1] || gal[0] || {}).src || m.url; });
+        if (isPh(imgs.drape)) { imgs.drape = m.url; imgs.drapeSm = m.url; }
+        ['closeup', 'roll', 'folded', 'variations', 'styled'].forEach(k => { if (isPh(imgs[k])) imgs[k] = (gal[1] || gal[0] || {}).src || m.url; });
         imgs.gallery = gal; db.update('products', p.id, { images: imgs, updated_at: now() });
       } else if (target === 'category' || target === 'collection') {
         need(can(ctx.perms, 'products', 'edit'), 'forbidden', 'Permission denied');

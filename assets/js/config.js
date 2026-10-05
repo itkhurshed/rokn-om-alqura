@@ -75,5 +75,8 @@ ROKN.config = {
   ],
 
   /* Set to true while the catalogue still contains demo products */
-  sampleCatalogue: true
+  sampleCatalogue: true,
+
+  /* Must match SEED_VERSION in biz/seed.js — older admin snapshots in a visitor's browser are ignored */
+  dataVersion: 2
 };

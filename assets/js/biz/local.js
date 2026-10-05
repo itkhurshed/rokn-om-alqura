@@ -85,7 +85,10 @@ window.ROKN = window.ROKN || {};
     svc = B.createServices({ db, crypto: webCrypto, mode: 'local', hooks: { afterWrite: () => { publish(); clearTimeout(saveTimer); saveTimer = setTimeout(persist, 30); } } });
     let loaded = null;
     try { dbh = await idb.open(); loaded = await idb.loadAll(dbh); } catch (e) { api.persistent = false; dbh = null; }
-    if (loaded && loaded.meta && loaded.meta.length) { db.load(loaded); db.takeDirty(); }
+    const metaOf = id => ((loaded && loaded.meta) || []).find(m => m.id === id);
+    const stale = loaded && loaded.meta && loaded.meta.length && (metaOf('demo') || {}).value === true && ((metaOf('seed_version') || {}).value || 1) < B.seed.SEED_VERSION;
+    if (stale) { try { await idb.save(dbh, Object.keys(loaded).map(t => [t, []])); } catch (e) { /* */ } try { localStorage.removeItem('rokn:pub'); } catch (e) { /* */ } }
+    if (loaded && loaded.meta && loaded.meta.length && !stale) { db.load(loaded); db.takeDirty(); }
     else {
       onProgress && onProgress('seed');
       const src = { products: ROKN.data.baseProducts || ROKN.data.products, catalog: ROKN.catalog.base || ROKN.catalog, config: ROKN.config };

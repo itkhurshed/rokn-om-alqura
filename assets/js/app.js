@@ -548,7 +548,14 @@ window.ROKN = window.ROKN || {};
     }
   });
 
-  document.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.classList.add('img-missing'); }, true);
+  /* Missing photo (e.g. a product added in Admin before its photos are uploaded) → neutral placeholder, once */
+  document.addEventListener('error', e => {
+    const im = e.target; if (im.tagName !== 'IMG' || im.dataset.fallback) return;
+    im.dataset.fallback = '1'; im.removeAttribute('srcset');
+    const src = /-sm\.webp$|drape-sm|thumb/.test(im.getAttribute('src') || '') ? 'assets/img/placeholder-sm.webp' : 'assets/img/placeholder.webp';
+    if (im.parentElement && im.parentElement.tagName === 'PICTURE') im.parentElement.querySelectorAll('source').forEach(s => s.remove());
+    im.src = src;
+  }, true);
 
   let ticking = false;
   window.addEventListener('scroll', () => {

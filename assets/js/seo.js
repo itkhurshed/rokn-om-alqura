@@ -30,6 +30,8 @@ window.ROKN = window.ROKN || {};
   const brand = () => (ar() ? 'ركن أم القرى' : 'Rokn Om Alqura');
   const url = (raw, lang) => `${site()}/${ROKN.router.href(raw, lang)}`;
 
+  const catEn = c => /fabric/i.test(c.en) ? c.en.replace(/Fabrics$/, 'Fabric') : `${c.en} Fabric`;
+  const catAr = c => /^أقمشة/.test(c.ar) ? c.ar : `أقمشة ${c.ar}`;
   function apply(raw, title, desc, image, type = 'website', noindex = false) {
     document.title = title;
     meta('description', desc);
@@ -57,8 +59,8 @@ window.ROKN = window.ROKN || {};
       if (['shop', 'collection', 'new', 'bestsellers', 'search', 'color', 'categories', 'collections'].includes(name)) {
         let heading = name === 'categories' ? t('pages.categories') : name === 'collections' ? t('pages.collections') : ROKN.pages.shop.title(name, param);
         const cat = name === 'shop' && param ? ROKN.q.category(param) : null, col = name === 'collection' ? ROKN.q.collection(param) : null;
-        let title = name === 'shop' && !param ? m.shop[0] : cat ? (ar() ? `أقمشة ${L(cat)} في الكويت | ${brand()}` : `${L(cat)} Fabric in Kuwait | ${brand()}`) : col ? (ar() ? `${L(col)} | أقمشة فاخرة الكويت | ${brand()}` : `${L(col)} | Luxury Fabrics Kuwait | ${brand()}`) : `${heading} | ${brand()}`;
-        const desc = cat ? (ar() ? `${L(cat.desc)} تسوّق أقمشة ${L(cat)} بالمتر من متجر أقمشة في مدينة الكويت.` : `${L(cat.desc)} Shop ${L(cat)} fabric by the metre from our fabric store in Kuwait City.`) : col ? L(col.desc) : m.shop[1];
+        let title = name === 'shop' && !param ? m.shop[0] : cat ? (ar() ? `${catAr(cat)} في الكويت | ${brand()}` : `${catEn(cat)} in Kuwait | ${brand()}`) : col ? (ar() ? `${L(col)} | أقمشة فاخرة الكويت | ${brand()}` : `${L(col)} | Luxury Fabrics Kuwait | ${brand()}`) : `${heading} | ${brand()}`;
+        const desc = cat ? (ar() ? `${L(cat.desc)} تسوّق ${catAr(cat)} بالمتر من متجر أقمشة في مدينة الكويت.` : `${L(cat.desc)} Shop ${catEn(cat).replace(/ Fabrics?$/, '')} fabric by the metre from our fabric store in Kuwait City.`) : col ? L(col.desc) : m.shop[1];
         apply(raw, title, desc, col ? col.image.replace(/^\//, '') : 'assets/img/hero-2.webp', 'website', noindex);
         ld('ld-breadcrumb', crumbs([{ name: t('nav.shop'), raw: 'shop' }, ...(name === 'shop' && !param ? [] : [{ name: heading, raw }])]));
         ld('ld-collection', col || cat ? { '@context': 'https://schema.org', '@type': 'CollectionPage', name: heading, description: desc, url: url(raw), inLanguage: ar() ? 'ar-KW' : 'en' } : null);
@@ -76,7 +78,7 @@ window.ROKN = window.ROKN || {};
       if (!p) return;
       ld('ld-faq', null); ld('ld-collection', null);
       const cat = ROKN.q.category(p.category), raw = 'product--' + p.id;
-      const title = p.seoTitle ? L(p.seoTitle) : ar() ? `${L(p.name)} | أقمشة ${L(cat)} في الكويت | ${brand()}` : `${L(p.name)} | ${L(cat)} Fabric in Kuwait | ${brand()}`;
+      const title = p.seoTitle ? L(p.seoTitle) : ar() ? `${L(p.name)} | ${catAr(cat)} في الكويت | ${brand()}` : `${L(p.name)} | ${catEn(cat)} in Kuwait | ${brand()}`;
       const price = ROKN.fmt.money(p.price);
       const desc = p.seoDesc ? L(p.seoDesc) : ar() ? `${L(p.name)} بسعر ${price} للمتر. ${L(p.description)}`.slice(0, 158) : `${L(p.name)} from ${price} per metre. ${L(p.description)}`.slice(0, 158);
       const color = ROKN.pdp.color || ROKN.q.defaultColor(p);

@@ -14,6 +14,8 @@ window.ROKN = window.ROKN || {};
   if (window.ROKN_PUB) pub = window.ROKN_PUB;            // server-rendered (server/server.js)
   else { try { pub = JSON.parse(localStorage.getItem('rokn:pub') || 'null'); } catch (e) { pub = null; } }
   ROKN.pub = pub;
+  if (pub && !window.ROKN_PUB && (pub.seed || 1) < (ROKN.config.dataVersion || 1)) pub = null;   // snapshot from an older bundled catalogue
+  ROKN.pub = pub;
   if (!pub || !Array.isArray(pub.products) || !pub.products.length) return;
 
   ROKN.data.products = pub.products.filter(p => p.status === 'active' && (p.variants || []).length);

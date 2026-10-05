@@ -1296,8 +1296,8 @@ ROKN.data.products = [
     }),
     Object.assign({}, base, {
       id: 'japan-yearn-9x9', slug: 'japan-yearn-9x9', sku: 'ROA-DSH-102',
-      name_en: 'YEARN 9×9 Japanese Dishdasha Fabric', name_ar: 'قماش دشاديش ياباني — يارن ٩×٩',
-      description_en: 'YEARN 9×9 dishdasha fabric by Yashica Plus Japan. The box describes it as made from fine natural yarns, non-cling and crease-free — 58" wide, 25 yards per piece, made in Japan.',
+      name_en: 'YEARN 9x9 Japanese Dishdasha Fabric', name_ar: 'قماش دشاديش ياباني — يارن ٩×٩',
+      description_en: 'YEARN 9x9 dishdasha fabric by Yashica Plus Japan. The box describes it as made from fine natural yarns, non-cling and crease-free — 58" wide, 25 yards per piece, made in Japan.',
       description_ar: 'قماش دشاديش يارن ٩×٩ من ياشيكا بلس اليابانية. تصفه العلبة بأنه من أفضل الخيوط الطبيعية، لا يلصق ولا يتكسر؛ بعرض ٥٨ إنشًا و٢٥ ياردة للقطعة، صُنع في اليابان.',
       category: 'dishdasha', collections: ['dishdasha', 'traditional'], fabric_type: 'plain', material: 'blend', pattern: 'solid',
       texture_en: 'Soft, smooth hand', texture_ar: 'ملمس ناعم وأملس', use_en: 'Dishdashas / kanduras', use_ar: 'دشاديش / كنادير',
